@@ -383,17 +383,26 @@ function newImageData(path, s)
 	for y = 0, height-1 do
 		for x = 0, width-1 do
 			local oldr, oldg, oldb, olda = imagedata:getPixel(x, y)
-			
 			if olda ~= 0 then
 				if oldr > 203 and oldr < 213 then --lightgrey
+					--[[
 					local r = 145 + rr*64
 					local g = 145 + rg*64
 					local b = 145 + rb*64
+					]]--
+					local r = 252
+					local g = 149
+					local b = 144
 					imagedata:setPixel(x, y, r, g, b, olda)
 				elseif oldr > 107 and oldr < 117 then --darkgrey
+					--[[
 					local r = 73 + rr*43
 					local g = 73 + rg*43
 					local b = 73 + rb*43
+					]]--
+					local r = 156
+					local g = 69
+					local b = 72
 					imagedata:setPixel(x, y, r, g, b, olda)
 				end
 			end
