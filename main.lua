@@ -133,7 +133,21 @@ function love.load()
 	math.randomseed( os.time() )
 	math.random();math.random();math.random() --discarding some as they seem to tend to unrandomness.
 	
-	love.graphics.setBackgroundColor( 255, 255, 255 )
+	useslider = false
+	customcolors = {
+		{255, 255, 255}, -- white
+		{252, 149, 144}, -- light grey
+		{156, 69, 72}, -- dark grey
+		{0, 0, 0}, -- black
+		{232, 232, 232} -- misc
+	}
+	
+	bgcolor = {255, 255, 255}
+	if not useslider then
+		bgcolor = customcolors[1]
+	end
+	
+	love.graphics.setBackgroundColor( unpack(bgcolor) )
 
 	p1wins = 0
 	p2wins = 0
@@ -384,27 +398,32 @@ function newImageData(path, s)
 		for x = 0, width-1 do
 			local oldr, oldg, oldb, olda = imagedata:getPixel(x, y)
 			if olda ~= 0 then
-				if oldr > 203 and oldr < 213 then --lightgrey
-					--[[
-					local r = 145 + rr*64
-					local g = 145 + rg*64
-					local b = 145 + rb*64
-					]]--
-					local r = 252
-					local g = 149
-					local b = 144
-					imagedata:setPixel(x, y, r, g, b, olda)
-				elseif oldr > 107 and oldr < 117 then --darkgrey
-					--[[
-					local r = 73 + rr*43
-					local g = 73 + rg*43
-					local b = 73 + rb*43
-					]]--
-					local r = 156
-					local g = 69
-					local b = 72
-					imagedata:setPixel(x, y, r, g, b, olda)
+				local r, g, b = oldr, oldg, oldb
+				if useslider then
+					if oldr > 203 and oldr < 213 then --lightgrey
+						r = 145 + rr*64
+						g = 145 + rg*64
+						b = 145 + rb*64
+					elseif oldr > 107 and oldr < 117 then --darkgrey
+						r = 73 + rr*43
+						g = 73 + rg*43
+						b = 73 + rb*43
+					end
+				else
+					if oldr > 203 and oldr < 213 then --lightgrey
+						r,g,b = unpack(customcolors[2])
+					elseif oldr > 107 and oldr < 117 then --darkgrey
+						r,g,b = unpack(customcolors[3])
+					elseif oldr > 250 and oldg > 250 and oldb > 250 then --white
+						r,g,b = unpack(customcolors[1])
+					elseif oldr < 5 and oldg < 5 and oldb < 5 then -- black
+						r,g,b = unpack(customcolors[4])
+					else
+						r,g,b = unpack(customcolors[5]) -- misc
+					end
 				end
+				imagedata:setPixel(x, y, r, g, b, olda)
+
 			end
 		end
 	end
@@ -801,7 +820,7 @@ function love.keypressed( key, unicode )
 	if gamestate == nil then
 		if controls.check("return", key) then
 			gamestate = "title"
-			love.graphics.setBackgroundColor( 0, 0, 0)
+			love.graphics.setBackgroundColor( unpack(bgcolor) )
 			love.audio.play(musictitle)
 			oldtime = love.timer.getTime()
 		end
@@ -809,7 +828,7 @@ function love.keypressed( key, unicode )
 	elseif gamestate == "logo" then
 		if controls.check("return", key) then
 			gamestate = "title"
-			love.graphics.setBackgroundColor( 0, 0, 0)
+			love.graphics.setBackgroundColor( unpack(bgcolor) )
 			love.audio.play(musictitle)
 			oldtime = love.timer.getTime()
 		end
@@ -817,7 +836,7 @@ function love.keypressed( key, unicode )
 	elseif gamestate == "credits" then
 		if controls.check("return", key) then
 			gamestate = "title"
-			love.graphics.setBackgroundColor( 0, 0, 0)
+			love.graphics.setBackgroundColor( unpack(bgcolor) )
 			love.audio.play(musictitle)
 			oldtime = love.timer.getTime()
 		end
